@@ -17,8 +17,10 @@ public class App
 	
     public static void main( String[] args )
     {
+    	// topology builder is used to wire together the spout and bolts
         TopologyBuilder builder = new TopologyBuilder();
         
+        // set spout with id "commit-feed-listener"
         builder.setSpout("commit-feed-listener", new CommitFeedListener());
         builder.setBolt("email-extractor", new EmailExtractor()).shuffleGrouping("commit-feed-listener");
         builder.setBolt("email-counter", new EmailCounter()).fieldsGrouping("email-extractor", new Fields("Email"));
@@ -26,10 +28,14 @@ public class App
         Config config = new Config();
         config.setDebug(true);
         
+        // build storm topology from builder
         StormTopology topology = builder.createTopology();
+        
+        // run the topology in local cluster
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("commit-count-topology", config, topology);
         
+        // shutdown the cluster, or it will run forever
         Utils.sleep(TEN_SECONDS);
         cluster.killTopology("commit-count-topology");
         cluster.shutdown();
