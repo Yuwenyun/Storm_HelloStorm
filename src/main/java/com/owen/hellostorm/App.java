@@ -8,8 +8,8 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.utils.Utils;
 
 /**
- * Hello world!
- *
+ * This is a demo project showing how to create a simple storm project.
+ * The whole project consists of one spout and two bolts
  */
 public class App 
 {
